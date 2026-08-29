@@ -30,13 +30,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # There is no lint script in this package. `validate` is the Directus
-      # extension manifest check, which is the closest equivalent.
-      - name: Validate extension manifest
-        run: npm run validate
-
       - name: Build
         run: npm run build
+
+      # Must run AFTER build: `directus-extension validate` checks that the
+      # path declared in directus:extension actually exists, and dist/ is
+      # gitignored so the runner starts without it. Running it first passes
+      # locally (stale dist present) and fails in CI — exactly what happened
+      # on the first run.
+      - name: Validate extension manifest
+        run: npm run validate
 
       # ── Regression guard ─────────────────────────────────────────────────
       # Directus maps Postgres `text` to local type 'text' and `varchar` to

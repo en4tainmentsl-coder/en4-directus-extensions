@@ -1,0 +1,56 @@
+name: CI (Validate, Build)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: kyc-document-review
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: kyc-document-review/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # There is no lint script in this package. `validate` is the Directus
+      # extension manifest check, which is the closest equivalent.
+      - name: Validate extension manifest
+        run: npm run validate
+
+      - name: Build
+        run: npm run build
+
+      # ── Regression guard ─────────────────────────────────────────────────
+      # Directus maps Postgres `text` to local type 'text' and `varchar` to
+      # 'string'. Every En4tainment application column is `text`, so an
+      # interface declaring only 'string' is silently invisible in the
+      # picker — no error, no log line. That cost eight debugging attempts
+      # to find. If someone ever trims this back to ['string'], fail loudly
+      # here rather than discover it again in the admin panel.
+      - name: Assert interface declares both string and text
+        run: |
+          if ! grep -q '\["string","text"\]' dist/index.js; then
+            echo "::error::dist/index.js does not declare types: ['string','text']."
+            echo "The interface will not appear in the Directus picker on any"
+            echo "En4tainment column. See src/index.ts."
+            exit 1
+          fi
+          echo "types: ['string','text'] present in build output."

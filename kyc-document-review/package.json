@@ -1,6 +1,6 @@
 {
 	"name": "directus-extension-kyc-document-review",
-	"description": "Please enter a description for your extension",
+	"description": "Directus interface extension for reviewing En4tainment KYC identity documents (NIC front/back, venue Business Registration) held in private Cloudflare R2.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
@@ -31,5 +31,6 @@
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.112.4"
-	}
+	},
+	"license": "UNLICENSED"
 }

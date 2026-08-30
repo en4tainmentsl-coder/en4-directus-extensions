@@ -1,0 +1,11 @@
+# Supabase anon key in kyc-document-review/src/config.ts.
+#
+# Verified 2026-08-30: decoded claims are role=anon, ref=sqovyodycuyajmumcjnn.
+# The anon key is public by design - it is served to every browser that loads
+# the extension, and RLS is the control that protects the data. Not a secret.
+#
+# This entry is pinned to a commit-specific fingerprint, so if that line is
+# ever changed - e.g. a service_role key pasted into the same variable - the
+# fingerprint changes and gitleaks flags it again. Do not broaden this to a
+# path or rule-level allowlist.
+37b9c63c9e4fd8d491c5529e201e4f324737ef3e:kyc-document-review/src/config.ts:jwt:6

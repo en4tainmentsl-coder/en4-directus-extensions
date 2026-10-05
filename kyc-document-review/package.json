@@ -25,12 +25,12 @@
 		"validate": "directus-extension validate"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "18.0.4",
+		"@directus/extensions-sdk": "18.0.5",
 		"typescript": "^7.0.2",
-		"vue": "^3.5.42"
+		"vue": "^3.5.43"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.112.4"
+		"@supabase/supabase-js": "^2.117.2"
 	},
 	"license": "UNLICENSED"
 }

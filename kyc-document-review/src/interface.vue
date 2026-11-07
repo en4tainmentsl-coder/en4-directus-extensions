@@ -156,6 +156,16 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config';
 
 defineProps<{ value?: string | null }>();
 
+// This panel never writes its own field. It renders its own inputs (email,
+// password, rejection radios), whose native DOM events bubble to the root
+// div. Without these two lines Vue binds Directus's field listeners to that
+// root as native listeners, Directus reads a bubbled Event as the new value,
+// and the next Save writes `{"isTrusted":true,...}` into nic_storage_bucket —
+// which permanently breaks r2-deliver's bucket match for that talent.
+// Happened to talent_identity 3d387c5b on 2026-09-26. Do not remove.
+defineOptions({ inheritAttrs: false });
+defineEmits<{ input: [value: string | null] }>();
+
 // Sibling field values. Since Directus 10.12 the injected ref must be
 // re-wrapped in a computed inside setup(), or it reads as an empty object.
 const valuesRef = inject<any>('values', ref({}));
